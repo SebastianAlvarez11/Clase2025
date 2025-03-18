@@ -12,7 +12,7 @@ class Aplicacion:
         self.usuarios: list[Usuario] = []
         self.intentos_fallidos = {}
         self.tiempos_bloqueo = {}
-        self.estado_usuario = None
+        self.usuario_logueado: Usuario = None
     
     def crear_cuenta(self, usuario: Usuario):
         usuario.validar_tipo_documento(usuario.tipo_documento)
@@ -33,13 +33,14 @@ class Aplicacion:
         if not nombre:
             raise ErrorIniciarSesionSinNombre()
 
-        if self.estado_usuario:
+        if self.usuario_logueado:
             raise ErrorInicioSesionActivo()
         
         for usuario in self.usuarios:
             if usuario.nombre == nombre:
                 if usuario.contrasena == contrasena:
-                    self.estado_usuario = usuario
+                    self.usuario_logueado = usuario
+                    self.intentos_fallidos[self.usuario_logueado.nombre] = 0
                     return True
                 else:
                     self.intentos_fallidos[nombre] = self.intentos_fallidos.get(nombre, 0)+ 1
@@ -47,18 +48,24 @@ class Aplicacion:
         raise ErrorInicioSesionUsuarioNoExistente()
 
     def cambiar_contrasena(self, nueva_contrasena):
-        if self.estado_usuario.contrasena == nueva_contrasena:
+        if self.usuario_logueado.contrasena == nueva_contrasena:
+            self.intentos_fallidos[self.usuario_logueado.nombre] += 1
             raise ErrorContrasenaIgual()
-        self.estado_usuario.validar_contrasena(nueva_contrasena)
-
-        if self.intentos_fallidos.get(self.estado_usuario.nombre, 0) >= Aplicacion.MAX_INTENTOS:
-            if self.tiempos_bloqueo.get(self.estado_usuario.nombre) and time.time() - self.tiempos_bloqueo[self.estado_usuario.nombre] < Aplicacion.TIEMPO_BLOQUEO:
-                raise ErrorContrasenaIntentosFallidos()
-            else:
-                self.intentos_fallidos[self.estado_usuario.nombre] = 0
-        self.estado_usuario.contrasena = nueva_contrasena
+        try:
+            self.usuario_logueado.validar_contrasena(nueva_contrasena)
+        except Exception as exception:
+            self.intentos_fallidos[self.usuario_logueado.nombre] += 1
+            raise exception
         
-        self.intentos_fallidos[self.estado_usuario.nombre] = 0
+        if self.intentos_fallidos.get(self.usuario_logueado.nombre) >= Aplicacion.MAX_INTENTOS:
+            raise ErrorContrasenaIntentosFallidos()
+            #if self.tiempos_bloqueo.get(self.usuario_logueado.nombre) and time.time() - self.tiempos_bloqueo[self.usuario_logueado.nombre] < Aplicacion.TIEMPO_BLOQUEO:
+            #    raise ErrorContrasenaIntentosFallidos()
+            #else:
+            #    self.intentos_fallidos[self.usuario_logueado.nombre] = 0
+        self.usuario_logueado.contrasena = nueva_contrasena
+        
+        self.intentos_fallidos[self.usuario_logueado.nombre] = 0
 
-        if self.estado_usuario.nombre in self.tiempos_bloqueo:
-            del self.tiempos_bloqueo[self.estado_usuario.nombre]
+        if self.usuario_logueado.nombre in self.tiempos_bloqueo:
+            del self.tiempos_bloqueo[self.usuario_logueado.nombre]
