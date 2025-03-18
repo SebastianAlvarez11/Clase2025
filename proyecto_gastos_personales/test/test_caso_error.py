@@ -4,29 +4,29 @@ from src.model.transacciones import Transacciones
 from src.model.aplicacion import Aplicacion
 from src.model.exception import (ErrorUsuarioExistente, ErrorTipoDocConNumeros, ErrorTipoDocConEspeciales, ErrorFechaTransaccion, ErrorHoraTransaccion,ErrorInicioSesionContrasenaIncorrecta, ErrorTransaccionCantidaConLetras, 
                                 ErrorInicioSesionUsuarioNoExistente, ErrorInicioSesionActivo, ErrorContrasenaCorta, ErrorContrasenaIgual, ErrorContrasenaVacia,ErrorTransaccionSinLoguearse, ErrorTransaccionNoExistente, 
-                                ErrorTransaccionSinCambios, ErrorVisualizarSinLoguearse, ErrorVisualizarFechaInPosterior, ErrorVisualizarFechasFormato)
+                                ErrorTransaccionSinCambios, ErrorVisualizarSinLoguearse, ErrorVisualizarFechaInicialPosterior, ErrorVisualizarFechasFormato)
 
 
 def test_caso_error_1():
     app: Aplicacion = Aplicacion()
-    usuario: Usuario = Usuario("Luis", "documento de identidad", 239324221, "43ffrf2","luish123@gmail.com", "02/05/1990")
     with pytest.raises(ErrorInicioSesionUsuarioNoExistente):
-        app.iniciar_sesion(usuario, "43ffrf2")
+        app.iniciar_sesion("Luis", "43ffrf2")
 
 def test_caso_error_2():
     app: Aplicacion = Aplicacion()
-    usuario: Usuario = Usuario("Luis", "documento de identidad", 239324221, "43ffrf2", "luish123@gmail.com", "09/05/1998")
-    contraseña_incorrecta = "11111"
-    usuario.validar_contrasena(contraseña_incorrecta)
+    usuario: Usuario = Usuario("Luis", "documento de identidad", 239324221, "43ffrf26_", "luish123@gmail.com", "09/05/1998")
+    app.crear_cuenta(usuario)
+    contraseña_incorrecta = "134ferr_"
     with pytest.raises(ErrorInicioSesionContrasenaIncorrecta):
-        app.iniciar_sesion(usuario, "43ffrf2")
+        app.iniciar_sesion("Luis", contraseña_incorrecta)
         
 def test_caso_error_3():
     app: Aplicacion = Aplicacion()
     usuario: Usuario = Usuario("Luis", "documento de identidad", 239324221, "43ffrf2", "luish123@gmail.com", "09/05/1998")
-    app.iniciar_sesion(usuario, "43ffrf2")
+    app.crear_cuenta(usuario)
+    app.iniciar_sesion("Luis", "43ffrf2")
     with pytest.raises(ErrorInicioSesionActivo):
-        app.iniciar_sesion(usuario, "43ffrf2") 
+        app.iniciar_sesion("Luis", "43ffrf2") 
 
 def test_caso_error_4():
     app: Aplicacion = Aplicacion()
@@ -50,6 +50,7 @@ def test_caso_error_6():
 def test_caso_error_7():
     app:Aplicacion = Aplicacion()
     usuario: Usuario = Usuario("Luis", "documento de identidad", 239324221, "43ffrf2", "luish123@gmail.com", "09/05/1998")
+    app.crear_cuenta(usuario)
     app.iniciar_sesion("Luis", "43ffrf2")
     transaccion: Transacciones = Transacciones(20000, "pago", "35/13/1900", "9:30")
     with pytest.raises(ErrorFechaTransaccion):
@@ -58,6 +59,7 @@ def test_caso_error_7():
 def test_caso_error_8():
     app:Aplicacion = Aplicacion()
     usuario: Usuario = Usuario("Luis", "documento de identidad", 239324221, "43ffrf2", "luish123@gmail.com", "09/05/1998")
+    app.crear_cuenta(usuario)
     app.iniciar_sesion("Luis", "43ffrf2")
     transaccion: Transacciones = Transacciones(20000, "pago", "20/08/2024", "28:62")
     with pytest.raises(ErrorHoraTransaccion):
@@ -66,6 +68,7 @@ def test_caso_error_8():
 def test_caso_error_9():
     app:Aplicacion = Aplicacion()
     usuario: Usuario = Usuario("Luis", "documento de identidad", 239324221, "43ffrf2", "luish123@gmail.com", "09/05/1998")
+    app.crear_cuenta(usuario)
     app.iniciar_sesion("Luis", "43ffrf2")
     transaccion: Transacciones = Transacciones("20000mil", "pago", "20/08/2024", "10:00")
     with pytest.raises(ErrorTransaccionCantidaConLetras):
@@ -74,71 +77,82 @@ def test_caso_error_9():
 def test_caso_error_10():
     app: Aplicacion = Aplicacion()
     usuario: Usuario = Usuario("Carlos", "cédula", 23434, "qwer1234", "carlossht09@gmail.com", "09/05/1998")
-    nueva_contrasena = "12s"
-    usuario.validar_contrasena(nueva_contrasena)
+    app.crear_cuenta(usuario)
+    app.iniciar_sesion("Carlos", "qwer1234")
+    nueva_contrasena = "1234"
     with pytest.raises(ErrorContrasenaCorta):
         app.cambiar_contrasena(nueva_contrasena)
 
 def test_caso_error_11():
     app: Aplicacion = Aplicacion()
-    usuario: Usuario = Usuario("Carlos", "cédula", 23434, "qwer1234", "carlossht09@gmail.com", "09/05/1998")
-    nueva_contrasena = "qwer1234"
-    usuario.validar_contrasena(nueva_contrasena)
+    usuario: Usuario = Usuario("Carlos", "cédula", 23434, "qwer1234_", "carlossht09@gmail.com", "09/05/1998")
+    app.crear_cuenta(usuario)
+    app.iniciar_sesion("Carlos", "qwer1234_")
+    nueva_contrasena = "qwer1234_"
     with pytest.raises(ErrorContrasenaIgual):
         app.cambiar_contrasena(nueva_contrasena)
 
 def test_caso_error_12():
     app: Aplicacion = Aplicacion()
     usuario: Usuario = Usuario("Carlos", "cédula", 23434, "qwer1234", "carlossht09@gmail.com", "09/05/1998")
+    app.crear_cuenta(usuario)
+    app.iniciar_sesion("Carlos", "qwer1234")
     nueva_contrasena = ""
-    usuario.validar_contrasena(nueva_contrasena)
     with pytest.raises(ErrorContrasenaVacia):
         app.cambiar_contrasena(nueva_contrasena)
 
 def test_caso_error_13():
     app: Aplicacion = Aplicacion()
     usuario: Usuario = Usuario("Carlos", "cédula", 23434, "qwer1234", "carlossht09@gmail.com", "09/05/1998")
+    app.crear_cuenta(usuario)
     transaccion: Transacciones = Transacciones("-20000", "comida", "6/03/2025", "11:40")
+    usuario.realizar_transaccion(transaccion)
     nueva_transaccion: Transacciones = Transacciones("-10000", "comida", "6/03/2025", "11:40")
     with pytest.raises(ErrorTransaccionSinLoguearse):
-        usuario.actualizar_transaccion(nueva_transaccion)
+        usuario.actualizar_transaccion(app, nueva_transaccion)
 
 def test_caso_error_14():
     app: Aplicacion = Aplicacion()
     usuario: Usuario = Usuario("Carlos", "cédula", 23434, "qwer1234", "carlossht09@gmail.com", "09/05/1998")
+    app.crear_cuenta(usuario)
     app.iniciar_sesion("Carlos","qwer1234")
     nueva_transaccion: Transacciones = Transacciones("-20000", "comida", "6/03/2025", "11:40")
     with pytest.raises(ErrorTransaccionNoExistente):
-        usuario.actualizar_transaccion(nueva_transaccion)
+        usuario.actualizar_transaccion(app, nueva_transaccion)
 
 def test_caso_error_15():
     app: Aplicacion = Aplicacion()
     usuario: Usuario = Usuario("Carlos", "cédula", 23434, "qwer1234", "carlossht09@gmail.com", "09/05/1998")
+    app.crear_cuenta(usuario)
     app.iniciar_sesion("Carlos", "qwer1234")
     transaccion: Transacciones = Transacciones("-20000", "comida", "6/03/2025", "11:40")
     usuario.realizar_transaccion(transaccion)
     nueva_transaccion: Transacciones = Transacciones("-20000", "comida", "6/03/2025", "11:40")
+    usuario.actualizar_transaccion(app, nueva_transaccion)
     with pytest.raises(ErrorTransaccionSinCambios):
-        usuario.actualizar_transaccion(nueva_transaccion)
+        usuario.actualizar_transaccion(app, nueva_transaccion)
 
 def test_caso_error_16():
     app:Aplicacion = Aplicacion()
     usuario: Usuario = Usuario("Carlos", "cédula", 23434, "qwer1234", "carlossht09@gmail.com", "09/05/1998")
+    app.crear_cuenta(usuario)
     with pytest.raises(ErrorVisualizarSinLoguearse):
-        usuario.visualizar_transacciones("05/01/2025", "05/02/2025")
+        usuario.visualizar_transacciones(app,"05/01/2025", "05/02/2025")
 
 def test_caso_error_17():
     app: Aplicacion = Aplicacion()
     usuario: Usuario = Usuario("Carlos", "cédula", 23434, "qwer1234", "carlossht09@gmail.com", "09/05/1998")
+    app.crear_cuenta(usuario)
     app.iniciar_sesion("Carlos", "qwer1234")
-    with pytest.raises(ErrorVisualizarFechaInPosterior):
-        usuario.visualizar_transacciones("01/03/2025", "01/02/2025")
+    with pytest.raises(ErrorVisualizarFechaInicialPosterior):
+        usuario.visualizar_transacciones(app,"01/03/2025", "01/02/2025")
 
 def test_caso_error_18():
     app: Aplicacion = Aplicacion()
     usuario: Usuario = Usuario("Carlos", "cédula", 23434, "qwer1234", "carlossht09@gmail.com", "09/05/1998")
+    app.crear_cuenta(usuario)
     app.iniciar_sesion("Carlos", "qwer1234")
     transaccion: Transacciones = Transacciones("-20000", "comida", "6/02/2025", "11:40")
     usuario.realizar_transaccion(transaccion)
     with pytest.raises(ErrorVisualizarFechasFormato):
-        usuario.visualizar_transacciones("01-02-2025", "01-03-2025")
+        usuario.visualizar_transacciones(app,"01-02-2025", "01-03-2025")

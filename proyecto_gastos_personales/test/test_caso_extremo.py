@@ -9,6 +9,7 @@ from src.model.exception import (ErrorTransaccionCantidadCero, ErrorCrearTransac
 def test_transaccion_gran_cantidad_de_dinero_1():
     app: Aplicacion = Aplicacion()
     usuario: Usuario = Usuario("Pepe", "cedula", 220091, "qwer123", "pepe_103@gmail.com", "09/05/1998")
+    app.crear_cuenta(usuario)
     app.iniciar_sesion("Pepe", "qwer123")
     transaccion: Transacciones = Transacciones(1000000000, "salario", "30/01/2025", "10:00")
     usuario.realizar_transaccion(transaccion)
@@ -17,6 +18,7 @@ def test_transaccion_gran_cantidad_de_dinero_1():
 def test_transaccion_cero_cantidad_2():
     app: Aplicacion = Aplicacion()
     usuario: Usuario = Usuario("Pepe", "cedula", 220091, "qwer123", "pepe_103@gmail.com","09/05/1998")
+    app.crear_cuenta(usuario)
     app.iniciar_sesion("Pepe", "qwer123")
     transaccion: Transacciones = Transacciones(0, "salario", "30/01/2025", "10:00")
     with pytest.raises(ErrorTransaccionCantidadCero):
@@ -25,6 +27,7 @@ def test_transaccion_cero_cantidad_2():
 def test_transaccion_sin_datos_3():
     app: Aplicacion = Aplicacion()
     usuario: Usuario = Usuario("Rio", "cédula", 545463777, "023pp", "rrio_103@gmail.com","09/05/1998")
+    app.crear_cuenta(usuario)
     app.iniciar_sesion("Rio", "023pp")
     transaccion: Transacciones = Transacciones("","","","")
     with pytest.raises(ErrorCrearTransaccionSinDatos):
@@ -33,6 +36,7 @@ def test_transaccion_sin_datos_3():
 def test_actualizar_cero_cantidad_4():
     app: Aplicacion = Aplicacion()
     usuario: Usuario = Usuario("Rio", "cédula", 545463777, "023pp", "rrio_103@gmail.com", "09/05/1998")
+    app.crear_cuenta(usuario)
     app.iniciar_sesion("Rio", "023pp")
     transaccion: Transacciones = Transacciones(-10000,"comida","03/02/2025","9:45")
     usuario.realizar_transaccion(transaccion)
@@ -77,66 +81,76 @@ def test_visualizar9():
 
 def test_iniciar_sesion_sin_nombre_10():
     app: Aplicacion = Aplicacion()
+    usuario: Usuario = Usuario("Rio", "cédula", 545463777, "1234qwer", "rrio_103@gmail.com", "09/05/1998")
+    app.crear_cuenta(usuario)
     with pytest.raises(ErrorIniciarSesionSinNombre):
         app.iniciar_sesion("", "1234qwer")
 
 def test_iniciar_sesion_muchas_veces_fallidas_11():
     app: Aplicacion = Aplicacion()
+    usuario: Usuario = Usuario("Carlos", "cedula", 100043134, "carlitos1_", "carloss130@gmail.com", "10/12/2001")
+    app.crear_cuenta(usuario)
     app.iniciar_sesion("Carlos", "402390ad")
-    app.iniciar_sesion("Carlos", "943u00d")
-    app.iniciar_sesion("Carlos", "1234aa")
+    app.iniciar_sesion("Carlos", "943u00d3")
+    app.iniciar_sesion("Carlos", "1234aa11")
     with pytest.raises(ErrorMuchosIntentosFallidos):
-        app.iniciar_sesion("Carlos", "12345as")
+        app.iniciar_sesion("Carlos", "carlitos1_")
 
 def test_iniciar_sesion_sistema_caido_12():
     app: Aplicacion = Aplicacion()
-    nombre = "Carlos"
-    contrasena = "12345as"
+    usuario: Usuario = Usuario("Carlos", "cedula", 100043134, "carlitos1_", "carloss130@gmail.com", "10/12/2001")
+    app.crear_cuenta(usuario)
     with pytest.raises(ErrorSistemaCaido):
-        app.iniciar_sesion(nombre, contrasena)
+        app.iniciar_sesion("","")
 
 def test__crear_cuenta_contrasena_muy_larga_13():
     app: Aplicacion = Aplicacion()
     usuario: Usuario = Usuario("Fred", "cedula", 16564532, "12345678900qwertyuiopasdfghjklñzxcvbnm", "fredd1995@gmail.com", "09/05/1998")
     lon = len(app.usuarios)
     app.crear_cuenta(usuario)
+    app.iniciar_sesion("Fred", "12345678900qwertyuiopasdfghjklñzxcvbnm")
     assert len(app.usuarios) == lon+1
 
 def test_crear_cuenta_fecha_muy_antigua_14():
     app: Aplicacion = Aplicacion()
-    usuario: Usuario = Usuario("Fred", "cedula", 16564532, "12345ty", "fredd1995@gmail.com", "09/05/1920")
+    usuario: Usuario = Usuario("Fred", "cedula", 16564532, "12345ty", "fredd1995@gmail.com", "09/05/1900")
     with pytest.raises(ErrorFechaNoValida):
         app.crear_cuenta(usuario)
 
 def test_crear_cuenta_correo_no_valido_15():
     app: Aplicacion = Aplicacion()
-    usuario: Usuario = Usuario("Fred", "cedula", 16564532, "12345ty", "fredd1995gmail.com", "09/05/1920")
+    usuario: Usuario = Usuario("Fred", "cedula", 16564532, "12345ty", "fredd1995gmail.com", "09/05/1990")
     with pytest.raises(ErrorCorreoNoValido):
         app.crear_cuenta(usuario)
 
 def test_cambiar_contrasena_no_segura_16():
     app: Aplicacion = Aplicacion()
+    usuario: Usuario = Usuario("Carlos", "cedula", 100043134, "carlitos1_", "carloss130@gmail.com", "10/12/2001")
+    app.crear_cuenta(usuario)
     app.iniciar_sesion("Carlos", "carlitos1_")
-    nueva_contrasena = "carlos_"
+    nueva_contrasena = "carlos1_"
     with pytest.raises(ErrorContrasenaNoSegura):
         app.cambiar_contrasena(nueva_contrasena)
 
 def test_cambiar_contrasena_demasiados_intentos_fallidos_17():
     app: Aplicacion = Aplicacion()
     usuario: Usuario = Usuario("Carlos", "cedula", 100043134, "carlitos1_", "carloss130@gmail.com", "10/12/2001")
+    app.crear_cuenta(usuario)
     app.iniciar_sesion("Carlos", "carlitos1_")
-    nueva_contrasena1 = "carlos_"
+    nueva_contrasena1 = "carloss_"
     usuario.validar_contrasena(nueva_contrasena1)
-    nueva_contrasena2 = "carlos01"
+    nueva_contrasena2 = "carlos0001"
     usuario.validar_contrasena(nueva_contrasena2)
-    nueva_contrasena3 = "carlos9"
+    nueva_contrasena3 = "CARLOSS11"
     usuario.validar_contrasena(nueva_contrasena3)
     with pytest.raises(ErrorContrasenaIntentosFallidos):
         app.cambiar_contrasena(nueva_contrasena3)
 
 def test_cambiar_contrasena_solo_un_numero_18():
     app: Aplicacion = Aplicacion()
+    usuario: Usuario = Usuario("Carlos", "cedula", 100043134, "carlitos1_", "carloss130@gmail.com", "10/12/2001")
+    app.crear_cuenta(usuario)
     app.iniciar_sesion("Carlos", "carlitos1_")
     nueva_contrasena = "00000000000000000"
-    with pytest.raises():
+    with pytest.raises(ErrorContrasenaNoSegura):
         app.cambiar_contrasena(nueva_contrasena)

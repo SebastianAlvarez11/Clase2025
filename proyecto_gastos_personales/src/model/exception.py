@@ -78,7 +78,7 @@ class ErrorVisualizarSinLoguearse(Exception):
     def __init__(self):
         super().__init__(f"Error, debe iniciar sesión para poder visualizar las transacciones.")
 
-class ErrorVisualizarFechaInPosterior(Exception):
+class ErrorVisualizarFechaInicialPosterior(Exception):
     """Excepción lanzada cuando se intenta visualizar transacciones con una fecha inicial posterior a la fecha final."""
     def __init__(self):
         super().__init__(f"Error, la fecha inicial debe ser antes de la fecha final.")

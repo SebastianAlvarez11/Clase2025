@@ -6,6 +6,7 @@ from src.model.aplicacion import Aplicacion
 def test_caso_normal_1():
     app: Aplicacion = Aplicacion()
     usuario: Usuario = Usuario("Juan", "cedula", "123323", "mdsse", "juann_123@gmail.com", "11/09/2000")
+    app.crear_cuenta(usuario)
     app.iniciar_sesion("Juan", "mdsse")
     transaccion: Transacciones = Transacciones(50000, "venta", "05/03/2025", "5:40")
     lon = len(usuario.transacciones)
@@ -15,6 +16,7 @@ def test_caso_normal_1():
 def test_caso_normal_2():
     app: Aplicacion = Aplicacion()
     usuario: Usuario = Usuario("Juan", "cedula", "123323", "mdsse", "juann_123@gmail.com", "11/09/2000")
+    app.crear_cuenta(usuario)
     app.iniciar_sesion("Juan", "mdsse")
     transaccion: Transacciones = Transacciones(-15000, "comida", "05/03/2025", "10:30")
     lon = len(usuario.transacciones)
@@ -24,6 +26,7 @@ def test_caso_normal_2():
 def test_caso_normal_3():
     app: Aplicacion = Aplicacion()
     usuario: Usuario = Usuario("Juan", "cedula", "123323", "mdsse", "juann_123@gmail.com", "11/09/2000")
+    app.crear_cuenta(usuario)
     app.iniciar_sesion("Juan", "mdsse")
     transaccion: Transacciones = Transacciones(-3400, "transporte", "01/03/2025", "8:30")
     lon = len(usuario.transacciones)
@@ -31,22 +34,26 @@ def test_caso_normal_3():
     assert len(usuario.transacciones) == lon+1
         
 def test_caso_normal_4():
+    app: Aplicacion = Aplicacion()
     usuario: Usuario = Usuario("Juan", "cedula", "123323", "mdsse", "juann_123@gmail.com", "11/09/2000")
+    app.crear_cuenta(usuario)
+    app.iniciar_sesion("Juan", "mdsse")
     transaccion: Transacciones = Transacciones(-3400, "transporte", "01/03/2025", "8:30")
     usuario.realizar_transaccion(transaccion)
-    nueva_transaccion: Transacciones = Transacciones(-4000, "transporte", "01/03/2025", "8:40")
-    usuario.actualizar_transaccion(nueva_transaccion)
+    nueva_transaccion: Transacciones = Transacciones(-4000, "transporte", "01/03/2025", "8:30")
+    usuario.actualizar_transaccion(app, nueva_transaccion)
     assert usuario.transacciones == [nueva_transaccion]
     
 
 def test_caso_normal_5():
     app: Aplicacion = Aplicacion()
     usuario: Usuario = Usuario("Juan", "cedula", "123323", "mdsse", "juann_123@gmail.com", "11/09/2000")
+    app.crear_cuenta(usuario)
     app.iniciar_sesion("Juan", "mdsse")
     transaccion: Transacciones = Transacciones(-8000, "comida", "07/03/2025", "12:30")
     usuario.realizar_transaccion(transaccion)
     nueva_transaccion: Transacciones = Transacciones(-5000, "comida", "07/03/2025", "12:30")
-    usuario.actualizar_transaccion(nueva_transaccion)
+    usuario.actualizar_transaccion(app, nueva_transaccion)
     assert nueva_transaccion in usuario.transacciones
 
 def test_caso_normal_6():
@@ -62,21 +69,23 @@ def test_caso_normal_6():
 def test_caso_normal_7():
     app: Aplicacion = Aplicacion()
     usuario: Usuario = Usuario("Juan", "cedula", "123323", "mdsse", "juann_123@gmail.com", "11/09/2000")
+    app.crear_cuenta(usuario)
     app.iniciar_sesion("Juan","mdsse")
     transaccion: Transacciones = Transacciones(-10000, "desayuno", "20/02/2025", "9:00")
     usuario.realizar_transaccion(transaccion)
-    transacciones_filtradas = usuario.visualizar_transacciones("10/02/2025", "29/02/2025")
+    transacciones_filtradas = usuario.visualizar_transacciones(app, "10/02/2025", "29/02/2025")
     assert transacciones_filtradas == [transaccion]
 
 def test_caso_normal_8():
     app: Aplicacion = Aplicacion()
     usuario: Usuario = Usuario("Mina", "cedula", "123378", "mdsse", "minart001@gmail.com", "11/09/2000")
+    app.crear_cuenta(usuario)
     app.iniciar_sesion("Mina","mdsse")
     transaccion1: Transacciones = Transacciones(-10000, "desayuno", "20/02/2025", "9:00")
     usuario.realizar_transaccion(transaccion1)
     transaccion2: Transacciones = Transacciones(-5000, "transporte", "21/02/2025", "12:00")
     usuario.realizar_transaccion(transaccion2)
-    transacciones_filtradas = usuario.visualizar_transacciones("10/02/2025", "29/02/2025")
+    transacciones_filtradas = usuario.visualizar_transacciones(app, "10/02/2025", "28/02/2025")
     assert transacciones_filtradas == [transaccion1, transaccion2]
 
 def test_caso_normal_9():
