@@ -44,13 +44,16 @@ class Usuario:
                 
             for transaccion in self.transacciones:
                 if transaccion.id == nueva_transaccion.id:
-                    transaccion.categoria = nueva_transaccion.categoria 
+                    transaccion.cantidad_dinero = nueva_transaccion.cantidad_dinero
+                    transaccion.categoria = nueva_transaccion.categoria
+                    transaccion.fecha = nueva_transaccion.fecha
+                    transaccion.hora = nueva_transaccion.hora 
                     return True
             
         raise ErrorTransaccionNoExistente()
         
 
-    def visualizar_transacciones(self, fecha_inicial, fecha_final):
+    def visualizar_transacciones(self, fecha_inicial:datetime, fecha_final:datetime):
         #if not aplicacion.estado_usuario:
         #    raise ErrorVisualizarSinLoguearse
         
@@ -69,7 +72,7 @@ class Usuario:
         try:
             fecha_inicial = datetime.strptime(fecha_inicial, "%d/%m/%Y")
             fecha_final = datetime.strptime(fecha_final, "%d/%m/%Y")
-        except ValueError:
+        except:
             raise ErrorVisualizarFechasFormato()
         
         transacciones_filtradas = [

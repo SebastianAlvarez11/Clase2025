@@ -40,7 +40,7 @@ def test_caso_normal_4():
     app.iniciar_sesion("Juan", "mdsse")
     transaccion: Transacciones = Transacciones(1, -3400, "transporte", "01/03/2025", "8:30")
     usuario.realizar_transaccion(transaccion)
-    nueva_transaccion: Transacciones = Transacciones(2, -4000, "transporte", "01/03/2025", "8:30")
+    nueva_transaccion: Transacciones = Transacciones(1, -4000, "transporte", "01/03/2025", "8:30")
     usuario.actualizar_transaccion(nueva_transaccion)
     assert usuario.transacciones == [nueva_transaccion]
     
@@ -52,7 +52,7 @@ def test_caso_normal_5():
     app.iniciar_sesion("Juan", "mdsse")
     transaccion: Transacciones = Transacciones(1, -8000, "comida", "07/03/2025", "12:30")
     usuario.realizar_transaccion(transaccion)
-    nueva_transaccion: Transacciones = Transacciones(2, -5000, "comida", "07/03/2025", "12:30")
+    nueva_transaccion: Transacciones = Transacciones(1, -5000, "comida", "07/03/2025", "12:30")
     usuario.actualizar_transaccion(nueva_transaccion)
     assert nueva_transaccion in usuario.transacciones
 
@@ -63,7 +63,7 @@ def test_caso_normal_6():
     app.iniciar_sesion("Juan", "mdsse")
     transaccion: Transacciones = Transacciones(1, 100000, "pago", "05/03/2025", "1:00")
     usuario.realizar_transaccion(transaccion)
-    nueva_transaccion: Transacciones = Transacciones(2, -5000, "comida", "07/03/2025", "12:30")
+    nueva_transaccion: Transacciones = Transacciones(1, -5000, "comida", "07/03/2025", "12:30")
     usuario.actualizar_transaccion(nueva_transaccion)
     assert len(usuario.transacciones) == 1
 

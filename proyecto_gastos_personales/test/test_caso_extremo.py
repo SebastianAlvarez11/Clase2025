@@ -160,13 +160,11 @@ def test_cambiar_contrasena_demasiados_intentos_fallidos_17():
     usuario: Usuario = Usuario("Carlos", "cedula", 100043134, "carlitos1_", "carloss130@gmail.com", "10/12/2001")
     app.crear_cuenta(usuario)
     app.iniciar_sesion("Carlos", "carlitos1_")
-    try:
-        app.cambiar_contrasena("carlitos1_")
-        app.cambiar_contrasena("carlitos1_")
-        app.cambiar_contrasena("carlitos1_")
-        app.cambiar_contrasena("carlitos1_")
-    except:
-        pass
+    for i in range(4):
+        try:
+            app.cambiar_contrasena("carlitos1_")
+        except:
+            pass
 
     with pytest.raises(ErrorContrasenaIntentosFallidos):      
         app.cambiar_contrasena("Carloss_10")     

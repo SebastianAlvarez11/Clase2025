@@ -76,8 +76,14 @@ class Aplicacion:
 
 
     def validar_usuario_logueado(self):
+        return self.usuario_logueado is not None
         if self.usuario_logueado:
             return True
+        
+    def visualizar_transacciones(self):
+        if self.validar_usuario_logueado():
+            self.usuario_logueado.visualizar_transacciones()
+
 
     def cerrar_sesion(self):
         self.usuario_logueado = None
