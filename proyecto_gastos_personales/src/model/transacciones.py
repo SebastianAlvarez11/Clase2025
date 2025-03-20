@@ -2,7 +2,8 @@ from datetime import datetime
 from src.model.exception import (ErrorFechaTransaccion, ErrorHoraTransaccion, ErrorTransaccionCantidaConLetras, ErrorVisualizarFechasFormato)
 
 class Transacciones:
-    def __init__(self, cantidad_dinero: float, categoria: str, fecha: str, hora: str):
+    def __init__(self,id: int, cantidad_dinero: float, categoria: str, fecha: str, hora: str):
+        self.id = id
         self.cantidad_dinero = cantidad_dinero
         self.categoria = categoria
         self.fecha = fecha
@@ -14,8 +15,7 @@ class Transacciones:
         try:
             self.fecha = datetime.strptime(self.fecha, "%d/%m/%Y")
         except ValueError:
-            raise ErrorFechaTransaccion
-        return True
+            raise ErrorFechaTransaccion()
 
     def validar_hora(self):
         if isinstance(self.hora, datetime):
@@ -23,14 +23,14 @@ class Transacciones:
         try:
             self.hora = datetime.strptime(self.hora, "%H:%M")
         except ValueError:
-            raise ErrorHoraTransaccion
+            raise ErrorHoraTransaccion()
         return True
     
     def validar_dinero(self):
         try:
             float(self.cantidad_dinero)
         except ValueError:
-            raise ErrorTransaccionCantidaConLetras
+            raise ErrorTransaccionCantidaConLetras()
         return True
 
     def filtrar_fechas(self, fecha_inicial, fecha_final):

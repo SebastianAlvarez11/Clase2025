@@ -52,7 +52,7 @@ def test_caso_error_7():
     usuario: Usuario = Usuario("Luis", "documento de identidad", 239324221, "43ffrf2", "luish123@gmail.com", "09/05/1998")
     app.crear_cuenta(usuario)
     app.iniciar_sesion("Luis", "43ffrf2")
-    transaccion: Transacciones = Transacciones(20000, "pago", "35/13/1900", "9:30")
+    transaccion: Transacciones = Transacciones(1, 20000, "pago", "35/13/1900", "9:30")
     with pytest.raises(ErrorFechaTransaccion):
         usuario.realizar_transaccion(transaccion)
 
@@ -61,7 +61,7 @@ def test_caso_error_8():
     usuario: Usuario = Usuario("Luis", "documento de identidad", 239324221, "43ffrf2", "luish123@gmail.com", "09/05/1998")
     app.crear_cuenta(usuario)
     app.iniciar_sesion("Luis", "43ffrf2")
-    transaccion: Transacciones = Transacciones(20000, "pago", "20/08/2024", "28:62")
+    transaccion: Transacciones = Transacciones(1, 20000, "pago", "20/08/2024", "28:62")
     with pytest.raises(ErrorHoraTransaccion):
         usuario.realizar_transaccion(transaccion)
 
@@ -70,7 +70,7 @@ def test_caso_error_9():
     usuario: Usuario = Usuario("Luis", "documento de identidad", 239324221, "43ffrf2", "luish123@gmail.com", "09/05/1998")
     app.crear_cuenta(usuario)
     app.iniciar_sesion("Luis", "43ffrf2")
-    transaccion: Transacciones = Transacciones("20000mil", "pago", "20/08/2024", "10:00")
+    transaccion: Transacciones = Transacciones(1, "20000mil", "pago", "20/08/2024", "10:00")
     with pytest.raises(ErrorTransaccionCantidaConLetras):
         usuario.realizar_transaccion(transaccion)
 
@@ -105,39 +105,39 @@ def test_caso_error_13():
     app: Aplicacion = Aplicacion()
     usuario: Usuario = Usuario("Carlos", "cédula", 23434, "qwer1234", "carlossht09@gmail.com", "09/05/1998")
     app.crear_cuenta(usuario)
-    transaccion: Transacciones = Transacciones("-20000", "comida", "6/03/2025", "11:40")
+    transaccion: Transacciones = Transacciones(1, "-20000", "comida", "6/03/2025", "11:40")
     usuario.realizar_transaccion(transaccion)
-    nueva_transaccion: Transacciones = Transacciones("-10000", "comida", "6/03/2025", "11:40")
+    nueva_transaccion: Transacciones = Transacciones(1, "-10000", "comida", "6/03/2025", "11:40")
     with pytest.raises(ErrorTransaccionSinLoguearse):
-        usuario.actualizar_transaccion(app, nueva_transaccion)
+        usuario.actualizar_transaccion(nueva_transaccion)
 
 def test_caso_error_14():
     app: Aplicacion = Aplicacion()
     usuario: Usuario = Usuario("Carlos", "cédula", 23434, "qwer1234", "carlossht09@gmail.com", "09/05/1998")
     app.crear_cuenta(usuario)
     app.iniciar_sesion("Carlos","qwer1234")
-    nueva_transaccion: Transacciones = Transacciones("-20000", "comida", "6/03/2025", "11:40")
+    nueva_transaccion: Transacciones = Transacciones(1, "-20000", "comida", "6/03/2025", "11:40")
     with pytest.raises(ErrorTransaccionNoExistente):
-        usuario.actualizar_transaccion(app, nueva_transaccion)
+        usuario.actualizar_transaccion(nueva_transaccion)
 
 def test_caso_error_15():
     app: Aplicacion = Aplicacion()
     usuario: Usuario = Usuario("Carlos", "cédula", 23434, "qwer1234", "carlossht09@gmail.com", "09/05/1998")
     app.crear_cuenta(usuario)
     app.iniciar_sesion("Carlos", "qwer1234")
-    transaccion: Transacciones = Transacciones("-20000", "comida", "6/03/2025", "11:40")
+    transaccion: Transacciones = Transacciones(1, "-20000", "comida", "6/03/2025", "11:40")
     usuario.realizar_transaccion(transaccion)
-    nueva_transaccion: Transacciones = Transacciones("-20000", "comida", "6/03/2025", "11:40")
-    usuario.actualizar_transaccion(app, nueva_transaccion)
+    nueva_transaccion: Transacciones = Transacciones(1, "-20000", "comida", "6/03/2025", "11:40")
+    usuario.actualizar_transaccion(nueva_transaccion)
     with pytest.raises(ErrorTransaccionSinCambios):
-        usuario.actualizar_transaccion(app, nueva_transaccion)
+        usuario.actualizar_transaccion(nueva_transaccion)
 
 def test_caso_error_16():
     app:Aplicacion = Aplicacion()
     usuario: Usuario = Usuario("Carlos", "cédula", 23434, "qwer1234", "carlossht09@gmail.com", "09/05/1998")
     app.crear_cuenta(usuario)
     with pytest.raises(ErrorVisualizarSinLoguearse):
-        usuario.visualizar_transacciones(app,"05/01/2025", "05/02/2025")
+        usuario.visualizar_transacciones("05/01/2025", "05/02/2025")
 
 def test_caso_error_17():
     app: Aplicacion = Aplicacion()
@@ -145,14 +145,14 @@ def test_caso_error_17():
     app.crear_cuenta(usuario)
     app.iniciar_sesion("Carlos", "qwer1234")
     with pytest.raises(ErrorVisualizarFechaInicialPosterior):
-        usuario.visualizar_transacciones(app,"01/03/2025", "01/02/2025")
+        usuario.visualizar_transacciones("01/03/2025", "01/02/2025")
 
 def test_caso_error_18():
     app: Aplicacion = Aplicacion()
     usuario: Usuario = Usuario("Carlos", "cédula", 23434, "qwer1234", "carlossht09@gmail.com", "09/05/1998")
     app.crear_cuenta(usuario)
     app.iniciar_sesion("Carlos", "qwer1234")
-    transaccion: Transacciones = Transacciones("-20000", "comida", "6/02/2025", "11:40")
+    transaccion: Transacciones = Transacciones(1, "-20000", "comida", "6/02/2025", "11:40")
     usuario.realizar_transaccion(transaccion)
     with pytest.raises(ErrorVisualizarFechasFormato):
-        usuario.visualizar_transacciones(app,"01-02-2025", "01-03-2025")
+        usuario.visualizar_transacciones("01-02-2025", "01-03-2025")

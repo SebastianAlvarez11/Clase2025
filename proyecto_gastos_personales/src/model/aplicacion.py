@@ -56,6 +56,7 @@ class Aplicacion:
         except Exception as exception:
             self.intentos_fallidos[self.usuario_logueado.nombre] += 1
             raise exception
+
         
         if self.intentos_fallidos.get(self.usuario_logueado.nombre) >= Aplicacion.MAX_INTENTOS:
             raise ErrorContrasenaIntentosFallidos()
@@ -63,9 +64,20 @@ class Aplicacion:
             #    raise ErrorContrasenaIntentosFallidos()
             #else:
             #    self.intentos_fallidos[self.usuario_logueado.nombre] = 0
-        self.usuario_logueado.contrasena = nueva_contrasena
+        
+        if self.usuario_logueado:
+            self.usuario_logueado.contrasena = nueva_contrasena
+            return True  
         
         self.intentos_fallidos[self.usuario_logueado.nombre] = 0
 
         if self.usuario_logueado.nombre in self.tiempos_bloqueo:
             del self.tiempos_bloqueo[self.usuario_logueado.nombre]
+
+
+    def validar_usuario_logueado(self):
+        if self.usuario_logueado:
+            return True
+
+    def cerrar_sesion(self):
+        self.usuario_logueado = None

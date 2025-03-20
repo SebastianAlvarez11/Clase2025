@@ -103,7 +103,15 @@ class ErrorVisualizarSinFechas(Exception):
     def __init__(self):
         super().__init__(f"Error, no se pueden visualizar transacciones sin unas fechas específicas.")
 
+class ErrorVisualizarSinFechaInicial(Exception):
+    """Excepción lanzada cuando se intenta visualizar transacciones sin fecha inicial."""
+    def __init__(self):
+        super().__init__(f"Error, no se pueden visualizar transacciones sin una fecha inicial.")
 
+class ErrorVisualizarSinFechaFinal(Exception):
+    """Excepción lanzada cuando se intenta visualizar transacciones sin fecha final."""
+    def __init__(self):
+        super().__init__(f"Error, no se pueden visualizar transacciones sin una fecha final.")
 
 class ErrorIniciarSesionSinNombre(Exception):
     """Excepción lanzada cuando se intenta iniciar sesión solo con la contraseña."""
@@ -139,3 +147,5 @@ class ErrorContrasenaIntentosFallidos(Exception):
     """Excepción lanzada cuando se intenta cambiar la contraseña con muchos intentos fallidos."""
     def __init__(self):
         super().__init__(f"Error, demasiados intentos fallidos, intente más tarde.")
+
+

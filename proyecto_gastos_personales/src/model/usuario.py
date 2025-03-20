@@ -4,7 +4,7 @@ from src.model.transacciones import Transacciones
 from src.model.exception import (ErrorTipoDocConNumeros, ErrorTipoDocConEspeciales, ErrorContrasenaCorta, ErrorContrasenaVacia, ErrorTransaccionSinLoguearse,
                                  ErrorTransaccionNoExistente, ErrorTransaccionSinCambios, ErrorVisualizarSinLoguearse, ErrorVisualizarFechaInicialPosterior,
                                  ErrorVisualizarFechasFormato, ErrorTransaccionCantidadCero, ErrorCrearTransaccionSinDatos, ErrorFechaNoValida,
-                                 ErrorCorreoNoValido, ErrorContrasenaNoSegura)
+                                 ErrorCorreoNoValido, ErrorContrasenaNoSegura, ErrorVisualizarSinFechas, ErrorVisualizarSinFechaInicial, ErrorVisualizarSinFechaFinal)
 
 class Usuario:
     def __init__(self, nombre: str, tipo_documento: str, numero_documento: int, contrasena: str, correo: str, fecha_nacimiento):
@@ -18,18 +18,22 @@ class Usuario:
 
     def realizar_transaccion(self, transaccion: Transacciones):
         if transaccion.cantidad_dinero == 0:
-            raise ErrorTransaccionCantidadCero
+            raise ErrorTransaccionCantidadCero()
         if not transaccion.cantidad_dinero or not transaccion.categoria or not transaccion.fecha or not transaccion.hora:
-            raise ErrorCrearTransaccionSinDatos
+            raise ErrorCrearTransaccionSinDatos()
         transaccion.validar_fecha()
         transaccion.validar_hora()
         transaccion.validar_dinero()
         self.transacciones.append(transaccion)
     
-    def actualizar_transaccion(self, aplicacion, nueva_transaccion: Transacciones):
-        if not aplicacion.estado_usuario:
-            raise ErrorTransaccionSinLoguearse()
-        
+    def actualizar_transaccion(self, nueva_transaccion: Transacciones):
+        #if not :
+        #    raise ErrorTransaccionSinLoguearse()
+        if nueva_transaccion.cantidad_dinero == 0:
+            raise ErrorTransaccionCantidadCero()
+        nueva_transaccion.validar_fecha()
+        nueva_transaccion.validar_hora()
+
         for i in range(len(self.transacciones)):
             transaccion_actual = self.transacciones[i]
             if (transaccion_actual.categoria == nueva_transaccion.categoria and
@@ -38,23 +42,35 @@ class Usuario:
                 if (transaccion_actual.cantidad_dinero == nueva_transaccion.cantidad_dinero):
                     raise ErrorTransaccionSinCambios() 
                 
-                self.transacciones[i] = nueva_transaccion
-                return 
+            for transaccion in self.transacciones:
+                if transaccion.id == nueva_transaccion.id:
+                    transaccion.categoria = nueva_transaccion.categoria 
+                    return True
             
         raise ErrorTransaccionNoExistente()
         
 
-    def visualizar_transacciones(self,aplicacion, fecha_inicial, fecha_final):
-        if not aplicacion.estado_usuario:
-            raise ErrorVisualizarSinLoguearse
+    def visualizar_transacciones(self, fecha_inicial, fecha_final):
+        #if not aplicacion.estado_usuario:
+        #    raise ErrorVisualizarSinLoguearse
+        
+        if fecha_inicial == "" and fecha_final == "":
+            raise ErrorVisualizarSinFechas()
+        
+        if not fecha_inicial:
+            raise ErrorVisualizarSinFechaInicial()
+        
+        if not fecha_final:
+            raise ErrorVisualizarSinFechaFinal()
+        
         if fecha_inicial > fecha_final:
-            raise ErrorVisualizarFechaInicialPosterior
+            raise ErrorVisualizarFechaInicialPosterior()
         
         try:
             fecha_inicial = datetime.strptime(fecha_inicial, "%d/%m/%Y")
             fecha_final = datetime.strptime(fecha_final, "%d/%m/%Y")
         except ValueError:
-            raise ErrorVisualizarFechasFormato
+            raise ErrorVisualizarFechasFormato()
         
         transacciones_filtradas = [
             transaccion for transaccion in self.transacciones
