@@ -13,8 +13,10 @@ class Transacciones:
         if isinstance(self.fecha, datetime):
             return True
         try:
-            self.fecha = datetime.strptime(self.fecha, "%d/%m/%Y")
+            fecha = datetime.strptime(self.fecha, "%d/%m/%Y")
         except ValueError:
+            raise ErrorFechaTransaccion()
+        if fecha.year > 2026:
             raise ErrorFechaTransaccion()
 
     def validar_hora(self):

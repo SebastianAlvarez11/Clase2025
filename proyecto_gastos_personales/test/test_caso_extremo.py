@@ -52,7 +52,7 @@ def test_actualizar_fecha_no_valida_5():
     app.iniciar_sesion("Rio", "023pp")
     transaccion: Transacciones = Transacciones(1, -10000,"comida","03/02/2025","9:45")
     usuario.realizar_transaccion(transaccion)
-    nueva_transaccion: Transacciones = Transacciones(2, -7000,"comida","03/02/2039","9:45")
+    nueva_transaccion: Transacciones = Transacciones(1, -7000,"comida","03/10/2039","9:45")
     with pytest.raises(ErrorFechaTransaccion):
         usuario.actualizar_transaccion(nueva_transaccion)
     
@@ -108,13 +108,11 @@ def test_iniciar_sesion_muchas_veces_fallidas_11():
     app: Aplicacion = Aplicacion()
     usuario: Usuario = Usuario("Carlos", "cedula", 100043134, "carlitos1_", "carloss130@gmail.com", "10/12/2001")
     app.crear_cuenta(usuario)
-    try:
-        app.iniciar_sesion("Carlos", "402390ad_")
-        app.iniciar_sesion("Carlos", "943u00d3_")
-        app.iniciar_sesion("Carlos", "1234aa11_")
-        app.iniciar_sesion("Carlos", "1234aa11_")
-    except:
-        pass
+    for i in range(4):
+        try:
+            app.iniciar_sesion("Carlos", "402390ad_")
+        except:
+            pass
     
     with pytest.raises(ErrorMuchosIntentosFallidos):
         app.iniciar_sesion("Carlos", "carlitos2_")

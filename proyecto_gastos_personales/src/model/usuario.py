@@ -27,10 +27,9 @@ class Usuario:
         self.transacciones.append(transaccion)
     
     def actualizar_transaccion(self, nueva_transaccion: Transacciones):
-        #if not :
-        #    raise ErrorTransaccionSinLoguearse()
         if nueva_transaccion.cantidad_dinero == 0:
             raise ErrorTransaccionCantidadCero()
+    
         nueva_transaccion.validar_fecha()
         nueva_transaccion.validar_hora()
 
@@ -53,10 +52,7 @@ class Usuario:
         raise ErrorTransaccionNoExistente()
         
 
-    def visualizar_transacciones(self, fecha_inicial:datetime, fecha_final:datetime):
-        #if not aplicacion.estado_usuario:
-        #    raise ErrorVisualizarSinLoguearse
-        
+    def visualizar_transacciones(self, fecha_inicial, fecha_final):  
         if fecha_inicial == "" and fecha_final == "":
             raise ErrorVisualizarSinFechas()
         

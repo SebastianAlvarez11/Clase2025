@@ -109,7 +109,7 @@ def test_caso_error_13():
     usuario.realizar_transaccion(transaccion)
     nueva_transaccion: Transacciones = Transacciones(1, "-10000", "comida", "6/03/2025", "11:40")
     with pytest.raises(ErrorTransaccionSinLoguearse):
-        usuario.actualizar_transaccion(nueva_transaccion)
+        app.actualizar_transaccion(nueva_transaccion)
 
 def test_caso_error_14():
     app: Aplicacion = Aplicacion()
@@ -128,7 +128,6 @@ def test_caso_error_15():
     transaccion: Transacciones = Transacciones(1, "-20000", "comida", "6/03/2025", "11:40")
     usuario.realizar_transaccion(transaccion)
     nueva_transaccion: Transacciones = Transacciones(1, "-20000", "comida", "6/03/2025", "11:40")
-    usuario.actualizar_transaccion(nueva_transaccion)
     with pytest.raises(ErrorTransaccionSinCambios):
         usuario.actualizar_transaccion(nueva_transaccion)
 
@@ -137,7 +136,7 @@ def test_caso_error_16():
     usuario: Usuario = Usuario("Carlos", "cédula", 23434, "qwer1234", "carlossht09@gmail.com", "09/05/1998")
     app.crear_cuenta(usuario)
     with pytest.raises(ErrorVisualizarSinLoguearse):
-        usuario.visualizar_transacciones("05/01/2025", "05/02/2025")
+        app.visualizar_transacciones("05/01/2025", "05/02/2025")
 
 def test_caso_error_17():
     app: Aplicacion = Aplicacion()

@@ -74,7 +74,7 @@ def test_caso_normal_7():
     app.iniciar_sesion("Juan","mdsse")
     transaccion: Transacciones = Transacciones(1, -10000, "desayuno", "20/02/2025", "9:00")
     usuario.realizar_transaccion(transaccion)
-    transacciones_filtradas = usuario.visualizar_transacciones("10/02/2025", "29/02/2025")
+    transacciones_filtradas = usuario.visualizar_transacciones("10/02/2025", "28/02/2025")
     assert transacciones_filtradas == [transaccion]
 
 def test_caso_normal_8():

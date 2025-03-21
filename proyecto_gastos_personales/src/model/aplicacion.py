@@ -2,7 +2,8 @@ import time
 from src.model.usuario import Usuario
 from src.model.transacciones import Transacciones
 from src.model.exception import (ErrorInicioSesionUsuarioNoExistente, ErrorInicioSesionContrasenaIncorrecta, ErrorInicioSesionActivo, ErrorUsuarioExistente,
-                                 ErrorContrasenaIgual, ErrorIniciarSesionSinNombre, ErrorMuchosIntentosFallidos, ErrorSistemaCaido, ErrorContrasenaIntentosFallidos)
+                                 ErrorContrasenaIgual, ErrorIniciarSesionSinNombre, ErrorMuchosIntentosFallidos, ErrorSistemaCaido, ErrorContrasenaIntentosFallidos,
+                                 ErrorTransaccionSinLoguearse, ErrorVisualizarSinLoguearse)
 
 class Aplicacion:
 
@@ -77,13 +78,16 @@ class Aplicacion:
 
     def validar_usuario_logueado(self):
         return self.usuario_logueado is not None
-        if self.usuario_logueado:
-            return True
         
-    def visualizar_transacciones(self):
-        if self.validar_usuario_logueado():
-            self.usuario_logueado.visualizar_transacciones()
+    def visualizar_transacciones(self, fecha_inicial, fecha_final):
+        if not self.validar_usuario_logueado():
+            raise ErrorVisualizarSinLoguearse()  
+        self.usuario_logueado.visualizar_transacciones()
 
-
+    def actualizar_transaccion(self, nueva_transaccion):
+        if not self.validar_usuario_logueado():
+            raise ErrorTransaccionSinLoguearse()
+        self.usuario_logueado.actualizar_transaccion()
+        
     def cerrar_sesion(self):
         self.usuario_logueado = None
